@@ -59,10 +59,25 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  window.addEventListener('keydown', function(event) {
-    const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
-    console.log(audio);
-  });
+    function playSound(event) {
+      const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
+      const key = document.querySelector(`.key[data-key="${event.keyCode}"]`);
+      
+      if(!audio) return; //just don't do anything if there's no sound
+      audio.currentTime = 0; //if you hit in succession over and over then keep playing it by rewinding to the start
+      audio.play(); // if there's an audio element, play it
+      key.classList.add('playing');
+  }
+
+    function removeTransition(event) {
+      if(event.propertyName !== 'transform') return; //skip if it's not a transform
+      this.classList.remove('playing');
+    }
+    
+    const keys = document.querySelectorAll('.key');
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition))
+    window.addEventListener('keydown', playSound);
+
 </script>
 
 
